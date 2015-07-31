@@ -2,9 +2,9 @@
 
 class AuthenticationManager extends BaseObject {
     public static function authenticate($username, $password) {
-        $user = DataManaget::getUserByUserName($username);
+        $user = DataManager::getUserByUserName($username);
 
-        if ($user != null && $user->getPasswordHash() == hash('sha1', $username . '|' . $password)) {
+        if ($user != null && $user->getPassword() == hash('sha1', $username . '|' . $password)) {
             $_SESSION['user'] = $user->getId();
             return true;
         }
@@ -18,7 +18,7 @@ class AuthenticationManager extends BaseObject {
     }
 
     public static function getAuthenticatedUser() {
-        return self::isAuthenticated() ? DataManaget::getUserById($_SESSION['user']) : null;
+        return self::isAuthenticated() ? DataManager::getUserById($_SESSION['user']) : null;
     }
 
     public static function isAuthenticated() {

@@ -7,7 +7,7 @@ $__users = array(1 => new User(1, "Test", "User", "scm4", "a8af855d47d091f037666
 				5 => new User(5, "Manuell", "Buchinger", "buchinger", "buchinger")
 );
 
-class DataManager extends DataObject {
+class DataManager extends BaseObject {
 	public static function getUserById($id) {
 		global $__users;
 		

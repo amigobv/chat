@@ -13,7 +13,7 @@ class BaseObject {
 		throw new Exception("Attribute " . $name . "does not exist.");
 	}
 	
-	public function __callStatic($name, $args) {
+	public static function __callStatic($name, $args) {
 		throw new Exception("Static method " . $name . "dows not exist.");
 	}
 }

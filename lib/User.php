@@ -23,7 +23,7 @@ class User extends Entity {
 	}
 		
 	public function getPassword() {
-		return $this->password;
+		return $this->hashPassword;
 	}
 	
 	public function setPassword($hashPassword) {

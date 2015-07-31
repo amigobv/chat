@@ -7,7 +7,7 @@
  */
 class Controller extends BaseObject {
 
-    const REQUEST_METHOD = POST;
+    const REQUEST_METHOD = 'POST';
     const ACTION_PARAM = 'action';
 
     const PAGE = 'page';
@@ -47,13 +47,16 @@ class Controller extends BaseObject {
                 if (!AuthenticationManager::authenticate($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD])) {
                     $this->forwardRequest(['Invalid user information provided']);
                 }
+
                 Util::redirect();
                 break;
 
             case self::ACTION_LOGOUT:
+                print_r("LOGOUT");
                 if (AuthenticationManager::isAuthenticated()) {
                     AuthenticationManager::signOut();
                 }
+
                 Util::redirect();
                 break;
         }
@@ -70,7 +73,7 @@ class Controller extends BaseObject {
         if (count($errors) > 0) {
             $target .= '$errors=' . urlenconde(serialize($errors));
         }
-        heder('location: ' . $target);
+        header('location: ' . $target);
         exit();
     }
 }
