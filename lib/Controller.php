@@ -14,6 +14,7 @@ class Controller extends BaseObject {
 
     const ACTION_LOGIN = 'login';
     const ACTION_LOGOUT = 'logout';
+    const ACTION_REGISTRATION = 'registrate';
 
     const USR_NAME = 'username';
     const USR_PASSWORD = 'password';
@@ -52,10 +53,15 @@ class Controller extends BaseObject {
                 break;
 
             case self::ACTION_LOGOUT:
-                print_r("LOGOUT");
-                if (AuthenticationManager::isAuthenticated()) {
+               if (AuthenticationManager::isAuthenticated()) {
                     AuthenticationManager::signOut();
                 }
+
+                Util::redirect();
+                break;
+
+            case self::ACTION_REGISTRATION:
+                //TODO: create new user
 
                 Util::redirect();
                 break;

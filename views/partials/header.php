@@ -27,7 +27,7 @@ $user = AuthenticationManager::getAuthenticatedUser();
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">Chat</a>
+                <a class="navbar-brand" href="/"><b>Chat</b></a>
             </div>
 
 

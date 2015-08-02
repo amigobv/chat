@@ -6,10 +6,11 @@ class Util extends BaseObject {
 	}
 	
 	public static function action($action, $params = null) {
-       // print_r($_SERVER);
-        print_r($_REQUEST);
+        // print_r($_SERVER);
+        //print_r($_REQUEST);
 
 		$page = isset($_REQUEST['page']) && $_REQUEST['page'] ? $_REQUEST['page'] : $_SERVER['REQUEST_URI'];
+        $page = explode('?', $page)[0];
         $ret = 'index.php?action=' . rawurlencode($action) . '&page=' . rawurlencode($page);
 
         if (is_array($params)) {
