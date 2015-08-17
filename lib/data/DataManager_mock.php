@@ -31,6 +31,12 @@ class DataManager extends BaseObject {
 		
 		return null;
 	}
+
+    public static function getUsers() {
+        global $__users;
+
+        return $__users;
+    }
 	
 }
 
