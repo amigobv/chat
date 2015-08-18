@@ -14,6 +14,7 @@ $user = AuthenticationManager::getAuthenticatedUser();
 		<link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<link href="assets/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
 		<link href="assets/main.css" rel="stylesheet">
+        <link href="assets/custom.css" rel="stylesheet">
 	</head>
 	<body>
 
@@ -27,7 +28,7 @@ $user = AuthenticationManager::getAuthenticatedUser();
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/"><b>Chat</b></a>
+                <a class="navbar-brand" href="/"><b>Slack light</b></a>
             </div>
 
 

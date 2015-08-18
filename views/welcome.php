@@ -5,9 +5,9 @@ include_once("views/partials/header.php");
 <?php if (AuthenticationManager::isAuthenticated()) : ?>
     <div class = "chatContainer">
         <div class = "col-md-8">
-            <div class = "panel panel-info">
-                <div class = "panel-heading">TODO: Channel Name</div>
-                <div class = "panel-body">
+            <div class = "panel panel-primary">
+                <div class = "panel-heading"><h4>Channel</h4> #name</div>
+                <div class = "panel-body panel-height">
                     <ul class = "media-list">
                         <li class = "media">
                             <div class = "media-body">
@@ -24,12 +24,21 @@ include_once("views/partials/header.php");
                 </div>
                 <div class = "panel-footer">
                     <form class = "chat" action = "">
-                        <div class = "input-group">
-                            <input type = "text" class = "form-control" placeholder = "Enter message">
-                            <span class = "input-group-btn">
-                                <button class = "btn btn-info" type = "button">SEND</button>
-                            </span>
+                        <div class = "form-group">
+                            <div class = "input-group col-sm-5">
+                                <input type = "text" class = "form-control" placeholder = "Title">
+                            </div>
                         </div>
+
+                        <div class = "form-group">
+                            <div class = "input-group ">
+                                <input type = "text" class = "form-control col-sm-9" placeholder = "Enter message">
+                                <span class = "input-group-btn">
+                                    <button class = "btn btn-info" type = "button">SEND</button>
+                                </span>
+                            </div>
+                        </div>
+
                     </form>
                 </div>
             </div>
