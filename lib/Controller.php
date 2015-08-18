@@ -19,6 +19,8 @@ class Controller extends BaseObject {
     const USR_NAME = 'username';
     const USR_PASSWORD = 'password';
 
+    const POST_MSG = 'postMessage';
+
     private static $instance = false;
 
     public static function getInstance() {
@@ -64,6 +66,10 @@ class Controller extends BaseObject {
                 //TODO: create new user
 
                 Util::redirect();
+                break;
+
+            case self::POST_MSG:
+
                 break;
         }
     }

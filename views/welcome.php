@@ -23,7 +23,7 @@ include_once("views/partials/header.php");
                     </ul>
                 </div>
                 <div class = "panel-footer">
-                    <form class = "chat" action = "">
+                    <form class = "chat" method = "post" action = "<?php echo Util::action('postMessage');?>">
                         <div class = "form-group">
                             <div class = "input-group col-sm-5">
                                 <input type = "text" class = "form-control" placeholder = "Title">
@@ -34,7 +34,7 @@ include_once("views/partials/header.php");
                             <div class = "input-group ">
                                 <input type = "text" class = "form-control col-sm-9" placeholder = "Enter message">
                                 <span class = "input-group-btn">
-                                    <button class = "btn btn-info" type = "button">SEND</button>
+                                    <button class = "btn btn-info" type = "submit">SEND</button>
                                 </span>
                             </div>
                         </div>
