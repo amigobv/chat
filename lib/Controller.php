@@ -18,6 +18,7 @@ class Controller extends BaseObject {
 
     const USR_NAME = 'username';
     const USR_PASSWORD = 'password';
+    const USR_CHANNEL = 'channel';
 
     const POST_MSG = 'postMessage';
 
@@ -40,7 +41,7 @@ class Controller extends BaseObject {
             throw new Exception("Controller can only handle " . self::REQUEST_METHOD . ' requests');
             return null;
         } else if (!isset($_REQUEST[self::ACTION_PARAM])) {
-            throw new Exceptioon(self::ACTION_PARAM . ' parameter is not specified');
+            throw new Exception(self::ACTION_PARAM . ' parameter is not specified');
         }
 
         $action = $_REQUEST[self::ACTION_PARAM];
@@ -50,6 +51,16 @@ class Controller extends BaseObject {
                 if (!AuthenticationManager::authenticate($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD])) {
                     $this->forwardRequest(['Invalid user information provided']);
                 }
+
+                //TODO: check category
+                /*
+                $channel = DataManager::getChannel($_REQUEST[self::USR_CHANNEL]);
+                if ($channel) {
+                    $user = DataManager::getUserByUsername($_REQUEST[self::USR_NAME]);
+                    if (!$channel->isSubscribed($user)) {
+                        throw new Exception('User is not registered in channel ' . $_REQUEST[self::USR_CHANNEL]);
+                    }
+                }*/
 
                 Util::redirect();
                 break;
@@ -69,6 +80,7 @@ class Controller extends BaseObject {
                 break;
 
             case self::POST_MSG:
+                //TODO: handle new post
 
                 break;
         }
@@ -83,7 +95,7 @@ class Controller extends BaseObject {
         }
 
         if (count($errors) > 0) {
-            $target .= '$errors=' . urlenconde(serialize($errors));
+            $target .= '$errors=' . urlencode(serialize($errors));
         }
         header('location: ' . $target);
         exit();

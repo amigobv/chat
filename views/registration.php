@@ -44,6 +44,18 @@ $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : null;
                     <input type="password" class="form-control" id="inputPassword" name="password" placeholder="try 'scm4'" required>
                 </div>
             </div>
+            <div class = "form-group">
+                <label for = "regChannel" class = "col-sm-4 control-label">Choose channel</label>
+                <div class = "col-sm-3">
+                    <select class = "form-control" id = "regChannel">
+                        <?php
+                            $channels = DataManager::getChannels();
+                            foreach($channels as $channel) { ?>
+                                <option><?php echo$channel->getName();?></option>
+                            <?php } ?>
+                    </select>
+                </div>
+            </div>
             <div class="form-group">
                 <div class="col-sm-offset-4 col-sm-3">
                     <button type="submit" class="btn btn-default">Login</button>

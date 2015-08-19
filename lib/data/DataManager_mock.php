@@ -7,6 +7,10 @@ $__users = array(1 => new User(1, "Test", "User", "scm4", "a8af855d47d091f037666
 				5 => new User(5, "Manuell", "Buchinger", "buchinger", "buchinger")
 );
 
+$__channels = array(1 => new Channel(1, "General"),
+                    2 => new Channel(2, "Backend"),
+                    3 => new Channel(3, "Frontend"));
+
 class DataManager extends BaseObject {
 	public static function getUserById($id) {
 		global $__users;
@@ -37,7 +41,24 @@ class DataManager extends BaseObject {
 
         return $__users;
     }
-	
+
+    public static function getChannel($channelName) {
+        global $__channels;
+
+        foreach($__channels as $ch) {
+            if ($ch->getName() == $channelName) {
+                return $ch;
+            }
+        }
+
+        return null;
+    }
+
+    public static function getChannels() {
+        global $__channels;
+
+        return $__channels;
+    }
 }
 
 

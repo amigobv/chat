@@ -14,7 +14,7 @@ $user = AuthenticationManager::getAuthenticatedUser();
 		<link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<link href="assets/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
 		<link href="assets/main.css" rel="stylesheet">
-        <link href="assets/custom.css" rel="stylesheet">
+        <link href="assets/customize.css" rel="stylesheet">
 	</head>
 	<body>
 
