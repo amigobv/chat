@@ -11,6 +11,11 @@ $__channels = array(1 => new Channel(1, "General"),
                     2 => new Channel(2, "Backend"),
                     3 => new Channel(3, "Frontend"));
 
+$__posts = array(1 => new Post(1, 1, 1, "Test", "Hello", false),
+                 2 => new Post(2, 1, 2, "Test", "Hi", false),
+                 3 => new Post(3, 1, 1, "Test", "How are you?", false),
+                 4 => new Post(4, 1, 2, "Test", "Fine, thanks!", false),);
+
 class DataManager extends BaseObject {
 	public static function getUserById($id) {
 		global $__users;
@@ -58,6 +63,19 @@ class DataManager extends BaseObject {
         global $__channels;
 
         return $__channels;
+    }
+
+    public static function getPostsByChannel($channelId) {
+        global $__posts;
+        $result = array();
+
+        foreach($__posts as $post) {
+            if ($post->getChannelId() == $channelId) {
+                array_push($post, $result);
+            }
+        }
+
+        return $result;
     }
 }
 

@@ -16,7 +16,7 @@ class Post extends Entity {
     /*
      * @var string
      */
-    private $author;
+    private $authorId;
 
     /*
      * @var enum
@@ -43,13 +43,13 @@ class Post extends Entity {
      */
     private $channelId;
 
-    public function __construct($id, $channelId, $author, $title, $content, $prominence) {
+    public function __construct($id, $channelId, $authorId, $title, $content, $prominence) {
         parent::__construct($id);
 
         $this->channelId = $channelId;
         $this->title = $title;
         $this->content = $content;
-        $this->author = $author;
+        $this->$authorId = $authorId;
         $this->prominence = $prominence;
         $this->status = Status::UNREAD;
     }
@@ -59,7 +59,7 @@ class Post extends Entity {
     }
 
     public function getAuthor() {
-        return $this->author;
+        return $this->$authorId;
     }
 
     public function getTitle() {
