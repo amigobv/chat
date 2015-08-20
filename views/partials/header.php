@@ -19,9 +19,9 @@ $user = AuthenticationManager::getAuthenticatedUser();
 	<body>
 
     <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container-fluid">
+        <div class="container-fluid navbar-custom">
             <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
+            <div class="navbar-header navbar-custom">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -32,13 +32,13 @@ $user = AuthenticationManager::getAuthenticatedUser();
             </div>
 
 
-            <div class="navbar-collapse collapse" id="bs-navbar-collapse-1">
-                <ul class="nav navbar-nav">
+            <div class="navbar-collapse collapse navbar-custom" id="bs-navbar-collapse-1">
+                <ul class="nav navbar-nav ">
                     <li><a href="index.php?view=welcome" <?php if(isset($_REQUEST['view']) && $_REQUEST['view'] == 'welcome') print ' class="active"'?>>Home</a></li>
                     <li><a href="index.php?view=channel" <?php if(isset($_REQUEST['view']) && $_REQUEST['view'] == 'list') print ' class="active"'?>>Channels</a></li>
                 </ul>
 
-                <ul class="nav navbar-nav navbar-right">
+                <ul class="nav navbar-nav navbar-right ">
                     <li>
                         <?php if ($user == null): ?>
                             <a href="index.php?view=registration"><span class="glyphicon glyphicon-user"></span> Sign Up</a>

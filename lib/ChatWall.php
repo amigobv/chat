@@ -7,6 +7,10 @@
  */
 
 class ChatWall extends BaseObject {
+    public static function getName() {
+        return $_SESSION['channel'];
+    }
+
     public static function add($postId) {
         $chat = self::getChat();
         $chat[$postId] = $postId;
@@ -14,18 +18,21 @@ class ChatWall extends BaseObject {
     }
 
     private static function getChat() {
-        return isset($_SESSION['chat']) && is_array($_SESSION['chat']) ? $_SESSION['chat'] : array();
+        $ch = $_SESSION['channel'];
+        return isset($_SESSION[$ch]) && is_array($_SESSION[$ch]) ? $_SESSION[$ch] : array();
     }
     public static function getAll() {
         return self::getChat();
     }
 
     public static function clear() {
-        unset($_SESSION['chat']);
+        $ch = $_SESSION['channel'];
+        unset($_SESSION[$ch]);
     }
 
     public static function storeChat(array $chat) {
-        $_SESSION['chat'] = $chat;
+        $ch = $_SESSION['channel'];
+        $_SESSION[$ch] = $chat;
     }
 
     public static function remove($chatId) {

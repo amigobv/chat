@@ -52,7 +52,8 @@ class Controller extends BaseObject {
                     $this->forwardRequest(['Invalid user information provided']);
                 }
 
-                //TODO: check category
+                $_SESSION[self::USR_CHANNEL] = $_REQUEST[self::USR_CHANNEL];
+
                 /*
                 $channel = DataManager::getChannel($_REQUEST[self::USR_CHANNEL]);
                 if ($channel) {

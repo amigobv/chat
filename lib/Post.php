@@ -49,8 +49,8 @@ class Post extends Entity {
         $this->channelId = $channelId;
         $this->title = $title;
         $this->content = $content;
-        $this->$authorId = $authorId;
-        $this->prominence = $prominence;
+        $this->authorId = $authorId;
+        $this->prominence = (bool)$prominence;
         $this->status = Status::UNREAD;
     }
 
@@ -59,7 +59,7 @@ class Post extends Entity {
     }
 
     public function getAuthor() {
-        return $this->$authorId;
+        return $this->authorId;
     }
 
     public function getTitle() {

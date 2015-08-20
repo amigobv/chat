@@ -9,12 +9,15 @@ $__users = array(1 => new User(1, "Test", "User", "scm4", "a8af855d47d091f037666
 
 $__channels = array(1 => new Channel(1, "General"),
                     2 => new Channel(2, "Backend"),
-                    3 => new Channel(3, "Frontend"));
+                    3 => new Channel(3, "Frontend")
+);
 
 $__posts = array(1 => new Post(1, 1, 1, "Test", "Hello", false),
                  2 => new Post(2, 1, 2, "Test", "Hi", false),
                  3 => new Post(3, 1, 1, "Test", "How are you?", false),
-                 4 => new Post(4, 1, 2, "Test", "Fine, thanks!", false),);
+                 4 => new Post(4, 1, 2, "Test", "Fine, thanks!", false),
+                 5 => new Post(5, 1, 1, "Test", "See U!", false)
+);
 
 class DataManager extends BaseObject {
 	public static function getUserById($id) {
@@ -71,7 +74,7 @@ class DataManager extends BaseObject {
 
         foreach($__posts as $post) {
             if ($post->getChannelId() == $channelId) {
-                array_push($post, $result);
+                array_push($result, $post);
             }
         }
 

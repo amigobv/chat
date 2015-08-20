@@ -7,13 +7,15 @@
  */
 class Channel extends Entity {
     private $name;
-    private $users = array();
 
     public function __construct($id, $name) {
         parent::__construct($id);
         $this->name = $name;
     }
 
+    public function getID() {
+        return parent::getID();
+    }
     public function getName() {
         return $this->name;
     }

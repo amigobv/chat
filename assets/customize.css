@@ -2,3 +2,24 @@
     height: 700px;
     overflow-y: scroll;
 }
+
+.container hr {
+    margin: 2px 0;
+}
+
+.container .lead {
+    margin-bottom: 5px;
+}
+
+.container .mark {
+    background-color: #E3F3FF;
+}
+
+.container .custom-star {
+    color: #FFA731;
+}
+
+.navbar-custom {
+    color: #FFFFFF;
+    background-color: #032746;
+}

@@ -6,20 +6,43 @@ include_once("views/partials/header.php");
     <div class = "chatContainer">
         <div class = "col-md-8">
             <div class = "panel panel-primary">
-                <div class = "panel-heading"><h4>Channel</h4> #name</div>
+                <div class = "panel-heading">
+                    <h4><?php echo (isset($_SESSION['channel']) && $_SESSION['channel']) ? $_SESSION['channel'] : "Default" ?></h4></div>
                 <div class = "panel-body panel-height">
                     <ul class = "media-list">
+                        <?php
+                        $channel = DataManager::getChannel($_SESSION['channel']);
+                        $messages = DataManager::getPostsByChannel($channel->getID());
+
+                        foreach($messages as $message) {
+                        ?>
                         <li class = "media">
-                            <div class = "media-body">
-                                <a class = "pull-left" href = "#"><span class = "glyphicon glyphicon-user"></span></a>
-                                <div class = "media-body">
-                                    TODO: CHAT
-                                    <br>
-                                    <small class = "text-muted">Username | Date</small>
-                                    <hr>
+                            <div class = "media-body <?php echo ($message->getStatus() == Status::UNREAD) ? 'mark' : '' ; ?> ">
+                                <p class="lead"><?php echo $message->getTitle(); ?><p>
+                                <?php echo $message->getContent(); ?>
+                                <br>
+                                <div>
+                                    <small class = "text-muted">
+                                        <a class = "pull-left" href = "#">
+                                            <span class = "glyphicon glyphicon-user">
+                                                <?php
+                                                $user = DataManager::getUserById($message->getAuthor());
+                                                echo $user->getUsername();
+                                                ?>
+                                            </span>
+                                        </a>
+
+                                        <?php if($message->getProminence()): ?>
+                                            <a class = "glyphicon glyphicon-star custom-star" href = '#'></a>
+                                        <?php else: ?>
+                                            <a href = '#'><span class = "glyphicon glyphicon-star-empty custom-star"></span></a>
+                                        <?php endif; ?>
+                                    </small>
                                 </div>
                             </div>
+                            <hr>
                         </li>
+                        <?php } ?>
                     </ul>
                 </div>
                 <div class = "panel-footer">
