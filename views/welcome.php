@@ -11,7 +11,7 @@ include_once("views/partials/header.php");
                 <div class = "panel-body panel-height">
                     <ul class = "media-list">
                         <?php
-                        $channel = DataManager::getChannel($_SESSION['channel']);
+                        $channel = DataManager::getChannelByName($_SESSION['channel']);
                         $messages = DataManager::getPostsByChannel($channel->getID());
 
                         foreach($messages as $message) {
@@ -49,13 +49,13 @@ include_once("views/partials/header.php");
                     <form class = "chat" method = "post" action = "<?php echo Util::action('postMessage');?>">
                         <div class = "form-group">
                             <div class = "input-group col-sm-5">
-                                <input type = "text" class = "form-control" placeholder = "Title">
+                                <input type = "text" class = "form-control" name = "title" placeholder = "Title">
                             </div>
                         </div>
 
                         <div class = "form-group">
                             <div class = "input-group ">
-                                <input type = "text" class = "form-control col-sm-9" placeholder = "Enter message">
+                                <input type = "text" class = "form-control col-sm-9" name = "content" placeholder = "Enter message">
                                 <span class = "input-group-btn">
                                     <button class = "btn btn-info" type = "submit">SEND</button>
                                 </span>

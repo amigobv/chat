@@ -22,6 +22,9 @@ class Controller extends BaseObject {
 
     const POST_MSG = 'postMessage';
 
+    const POST_TITLE = "title";
+    const POST_CONTENT = "content";
+
     private static $instance = false;
 
     public static function getInstance() {
@@ -81,8 +84,10 @@ class Controller extends BaseObject {
                 break;
 
             case self::POST_MSG:
-                //TODO: handle new post
+                $channel = DataManager::getChannelByName($_SESSION['channel']);
+                $user = AuthenticationManager::getAuthenticatedUser();
 
+                DataManager::publish(new Post(rand(), $user->getID(), $channel->getID(), $_REQUEST[self::POST_TITLE], $_REQUEST[self::POST_CONTENT], false));
                 break;
         }
     }
