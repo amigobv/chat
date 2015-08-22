@@ -50,11 +50,23 @@ class DataManager extends BaseObject {
         return $__users;
     }
 
-    public static function getChannel($channelName) {
+    public static function getChannelByName($channelName) {
         global $__channels;
 
         foreach($__channels as $ch) {
             if ($ch->getName() == $channelName) {
+                return $ch;
+            }
+        }
+
+        return null;
+    }
+
+    public static function getChannelById($channelId) {
+        global $__channels;
+
+        foreach($__channels as $ch) {
+            if ($ch->getID() == channelId) {
                 return $ch;
             }
         }
@@ -79,6 +91,13 @@ class DataManager extends BaseObject {
         }
 
         return $result;
+    }
+
+    public static function publish($post) {
+        global $__posts;
+
+        array_push($__posts, $post);
+        //TODO: should save the message
     }
 }
 
