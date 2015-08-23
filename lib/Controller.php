@@ -16,6 +16,8 @@ class Controller extends BaseObject {
     const ACTION_LOGOUT = 'logout';
     const ACTION_REGISTRATION = 'registrate';
 
+    const USR_FIRST_NAME = 'firstName';
+    const USR_LAST_NAME = 'lastName';
     const USR_NAME = 'username';
     const USR_PASSWORD = 'password';
     const USR_CHANNEL = 'channel';
@@ -51,20 +53,11 @@ class Controller extends BaseObject {
 
         switch($action) {
             case self::ACTION_LOGIN:
-                if (!AuthenticationManager::authenticate($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD])) {
+                if (!AuthenticationManager::authenticate($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD], $_REQUEST[self::USR_CHANNEL])) {
                     $this->forwardRequest(['Invalid user information provided']);
                 }
 
                 $_SESSION[self::USR_CHANNEL] = $_REQUEST[self::USR_CHANNEL];
-
-                /*
-                $channel = DataManager::getChannel($_REQUEST[self::USR_CHANNEL]);
-                if ($channel) {
-                    $user = DataManager::getUserByUsername($_REQUEST[self::USR_NAME]);
-                    if (!$channel->isSubscribed($user)) {
-                        throw new Exception('User is not registered in channel ' . $_REQUEST[self::USR_CHANNEL]);
-                    }
-                }*/
 
                 Util::redirect();
                 break;
@@ -78,9 +71,15 @@ class Controller extends BaseObject {
                 break;
 
             case self::ACTION_REGISTRATION:
-                //TODO: create new user
+                $channel = DataManager::getChannelByName($_REQUEST[self::USR_CHANNEL]);
+                DataManager::registerUser(  $_REQUEST[self::USR_FIRST_NAME],
+                                            $_REQUEST[self::USR_LAST_NAME],
+                                            $_REQUEST[self::USR_NAME],
+                                            hash('sha1', $_REQUEST[self::USR_NAME] . '|' . $_REQUEST[self::USR_PASSWORD]),
+                                            $channel->getID());
 
-                Util::redirect();
+                AuthenticationManager::authenticate($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD], $_REQUEST[self::USR_CHANNEL]);
+                Util::redirect('index.php?view=welcome');
                 break;
 
             case self::POST_MSG:
@@ -97,11 +96,11 @@ class Controller extends BaseObject {
             if (!isset($_REQUEST[self::PAGE])) {
                 throw new Exception("Missing target to forward");
             }
-            $target = $_REQUEST[self::PAGE];
+            $target = $_REQUEST[self::PAGE] . '?';
         }
 
         if (count($errors) > 0) {
-            $target .= '$errors=' . urlencode(serialize($errors));
+            $target .= 'errors=' . urlencode(serialize($errors));
         }
         header('location: ' . $target);
         exit();

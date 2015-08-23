@@ -30,9 +30,9 @@ USE `fh_2015_scm4_1310307036` ;
 --
 
 CREATE TABLE IF NOT EXISTS `Channel` (
-`idChannel` int(11) NOT NULL AUTO_INCREMENT,
+`channelId` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
-  PRIMARY KEY(`idChannel`)
+  PRIMARY KEY(`channelId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -42,12 +42,12 @@ CREATE TABLE IF NOT EXISTS `Channel` (
 --
 
 CREATE TABLE IF NOT EXISTS `Person` (
-`idUser` int(11) NOT NULL AUTO_INCREMENT,
+`userId` int(11) NOT NULL AUTO_INCREMENT,
   `firstName` varchar(45) NOT NULL,
   `lastName` varchar(45) NOT NULL,
   `username` varchar(45) NOT NULL,
   `passwordHash` varchar(128) NOT NULL,
-  PRIMARY KEY(`idUser`)
+  PRIMARY KEY(`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -57,21 +57,21 @@ CREATE TABLE IF NOT EXISTS `Person` (
 --
 
 CREATE TABLE IF NOT EXISTS `Message` (
-`idMessage` int(11) NOT NULL AUTO_INCREMENT,
-  `idPerson` int(11) NOT NULL,
-  `idChannel` int(11) NOT NULL,
+`messageId` int(11) NOT NULL AUTO_INCREMENT,
+  `authorId` int(11) NOT NULL,
+  `channelId` int(11) NOT NULL,
   `title` varchar(45) NOT NULL,
   `content` text NOT NULL,
   `important` tinyint(1) NOT NULL,
-  PRIMARY KEY(`idMessage`),
+  PRIMARY KEY(`messageId`),
   CONSTRAINT `fk_user_`
-    FOREIGN KEY (`idPerson`)
-    REFERENCES `Person` (`idUser`)
+    FOREIGN KEY (`authorId`)
+    REFERENCES `Person` (`userId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_channel_`
-    FOREIGN KEY (`idChannel`)
-    REFERENCES `Channel` (`idChannel`)
+    FOREIGN KEY (`channelId`)
+    REFERENCES `Channel` (`channelId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -83,23 +83,33 @@ CREATE TABLE IF NOT EXISTS `Message` (
 --
 
 CREATE TABLE IF NOT EXISTS `Register` (
-`idReg` int(11) NOT NULL AUTO_INCREMENT,
-  `person` int(11) NOT NULL,
-  `channel` int(11) NOT NULL,
-  PRIMARY KEY(`idReg`),
+`regId` int(11) NOT NULL AUTO_INCREMENT,
+  `personId` int(11) NOT NULL,
+  `channelId` int(11) NOT NULL,
+  PRIMARY KEY(`regId`),
   CONSTRAINT `fk_user`
-    FOREIGN KEY (`person`)
-    REFERENCES `fh_2015_scm4_1310307036`.`Person` (`idUser`)
+    FOREIGN KEY (`personId`)
+    REFERENCES `fh_2015_scm4_1310307036`.`Person` (`userId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_channel`
-    FOREIGN KEY (`channel`)
-    REFERENCES `fh_2015_scm4_1310307036`.`Channel` (`idChannel`)
+    FOREIGN KEY (`channelId`)
+    REFERENCES `fh_2015_scm4_1310307036`.`Channel` (`channelId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `Person` (`firstName`, `lastName`, `username`, `passwordHash`) VALUES ("scm4", "scm4", "scm4", "a8af855d47d091f0376664fe588207f334cdad22");
+INSERT INTO `Person` (`firstName`, `lastName`, `username`, `passwordHash`) VALUES ("Sam", "Sample", "Guest", "4e518eab8cf96bffa9e0c66add29c3c0b5a7bad1");
 
+INSERT INTO `Channel` (`name`)  VALUES ("General");
+INSERT INTO `Channel` (`name`)  VALUES ("Backend");
+INSERT INTO `Channel` (`name`)  VALUES ("Frontend");
+
+INSERT INTO `Register` (`personId`, `channelId`) VALUES (1, 1);
+INSERT INTO `Register` (`personId`, `channelId`) VALUES (2, 1);
+INSERT INTO `Register` (`personId`, `channelId`) VALUES (2, 2);
+INSERT INTO `Register` (`personId`, `channelId`) VALUES (2, 3);
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

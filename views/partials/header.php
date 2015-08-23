@@ -1,6 +1,9 @@
 <?php
 $user = AuthenticationManager::getAuthenticatedUser();
-
+if(isset($_GET['errors']))
+{
+    $errors = unserialize(urldecode($_GET['errors']));
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -28,14 +31,13 @@ $user = AuthenticationManager::getAuthenticatedUser();
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/"><b>Slack light</b></a>
+                <a class="navbar-brand" href="index.php?view=welcome"><b>Slack light</b></a>
             </div>
 
 
             <div class="navbar-collapse collapse navbar-custom" id="bs-navbar-collapse-1">
                 <ul class="nav navbar-nav ">
                     <li><a href="index.php?view=welcome" <?php if(isset($_REQUEST['view']) && $_REQUEST['view'] == 'welcome') print ' class="active"'?>>Home</a></li>
-                    <li><a href="index.php?view=channel" <?php if(isset($_REQUEST['view']) && $_REQUEST['view'] == 'list') print ' class="active"'?>>Channels</a></li>
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right ">

@@ -1,12 +1,17 @@
 <?php
 
 class AuthenticationManager extends BaseObject {
-    public static function authenticate($username, $password) {
+    public static function authenticate($username, $password, $channel) {
         $user = DataManager::getUserByUserName($username);
 
         if ($user != null && $user->getPassword() == hash('sha1', $username . '|' . $password)) {
-            $_SESSION['user'] = $user->getId();
-            return true;
+            $channels = DataManager::getChannelsByUserId($user->getID());
+            foreach($channels as $ch) {
+                if ($ch->getName() === $channel) {
+                    $_SESSION['user'] = $user->getId();
+                    return true;
+                }
+            }
         }
 
         self::signOut();

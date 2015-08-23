@@ -71,7 +71,8 @@ include_once("views/partials/header.php");
                 <div class = "panel-heading">Users</div>
                 <div class = "panel-body">
                     <?php
-                        $users = DataManager::getUsers();
+                        $channel = DataManager::getChannelByName($_SESSION['channel']);
+                        $users = DataManager::getUsersByChannelId($channel->getID());
                         foreach($users as $user) {
                             ?>
                             <ul class = "media-list">
@@ -88,6 +89,12 @@ include_once("views/partials/header.php");
     </div>
 <?php else: ?>
     <p>Please Login</p>
+
+    <?php
+    //print_r(DataManager::getChannels());
+    //print_r(hash('sha1', "scm4" . '|' . "scm4"));
+    //print_r(hash('sha1', "Guest" . '|' . "Guest"));
+    ?>
 <?php endif; ?>
 
 <?php

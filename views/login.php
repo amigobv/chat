@@ -39,7 +39,7 @@ $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : null;
                         <?php
                         $channels = DataManager::getChannels();
                         foreach($channels as $channel) { ?>
-                            <option><?php echo$channel->getName();?></option>
+                            <option><?php echo $channel->getName();?></option>
                         <?php } ?>
                     </select>
                 </div>

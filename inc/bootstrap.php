@@ -8,7 +8,19 @@ spl_autoload_register(function($class) {
 
 SessionContext::create();
 
-$datamode = 'mock';
+$datamode = 'pdo';
+
+switch ($datamode) {
+    //case 'mysqli':
+    case 'pdo': {
+
+        break;
+    }
+    default: {
+        $datamode = 'mock';
+        break;
+    }
+}
 
 require_once('lib/data/DataManager_' . $datamode . '.php');
 
