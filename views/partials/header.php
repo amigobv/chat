@@ -36,11 +36,10 @@ if(isset($_GET['errors']))
 
 
             <div class="navbar-collapse collapse navbar-custom" id="bs-navbar-collapse-1">
-                <ul class="nav navbar-nav ">
-                    <li><a href="index.php?view=welcome" <?php if(isset($_REQUEST['view']) && $_REQUEST['view'] == 'welcome') print ' class="active"'?>>Home</a></li>
-                </ul>
-
                 <ul class="nav navbar-nav navbar-right ">
+                    <li>
+                        <a href="index.php?view=join"><span class="glyphicon glyphicon-comment"></span> Join channel</a>
+                    </li>
                     <li>
                         <?php if ($user == null): ?>
                             <a href="index.php?view=registration"><span class="glyphicon glyphicon-user"></span> Sign Up</a>
@@ -53,7 +52,7 @@ if(isset($_GET['errors']))
                     </li>
                     <li>
                         <?php if ($user == null): ?>
-                            <a href="index.php?view=login"><span class="glyphicon glyphicon-log-in"></span> Login</a>
+                            <a href="index.php?view=welcome"><span class="glyphicon glyphicon-log-in"></span> Login</a>
                         <?php else: ?>
                             <a href="index.php?view=logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
                         <?php endif; ?>

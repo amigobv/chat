@@ -15,6 +15,7 @@ class Controller extends BaseObject {
     const ACTION_LOGIN = 'login';
     const ACTION_LOGOUT = 'logout';
     const ACTION_REGISTRATION = 'registrate';
+    const ACTION_JOIN_CHANNEL = 'join';
 
     const USR_FIRST_NAME = 'firstName';
     const USR_LAST_NAME = 'lastName';
@@ -72,14 +73,33 @@ class Controller extends BaseObject {
 
             case self::ACTION_REGISTRATION:
                 $channel = DataManager::getChannelByName($_REQUEST[self::USR_CHANNEL]);
-                DataManager::registerUser(  $_REQUEST[self::USR_FIRST_NAME],
-                                            $_REQUEST[self::USR_LAST_NAME],
-                                            $_REQUEST[self::USR_NAME],
-                                            hash('sha1', $_REQUEST[self::USR_NAME] . '|' . $_REQUEST[self::USR_PASSWORD]),
-                                            $channel->getID());
+                $registratedUsers = DataManager::getUsersByChannelId($channel->getID());
 
-                AuthenticationManager::authenticate($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD], $_REQUEST[self::USR_CHANNEL]);
-                Util::redirect('index.php?view=welcome');
+                foreach ($registratedUsers as $user) {
+                    if ($user->getUsername() === $_REQUEST[self::USR_NAME]) {
+                        $this->forwardRequest(['The username ' . $_REQUEST[self::USR_NAME] . ' is already used!'], 'index.php?view=registration');
+                    }
+                }
+
+                $user = DataManager::getUserByUsername($_REQUEST[self::USR_NAME]);
+                $userId = null;
+                if ($user)
+                    $userId = $user->getID();
+                else
+                    $userId = DataManager::saveNewUser($_REQUEST[self::USR_FIRST_NAME],
+                                                          $_REQUEST[self::USR_LAST_NAME],
+                                                          $_REQUEST[self::USR_NAME],
+                                                          AuthenticationManager::getHash($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD]));
+
+                DataManager::registrateUser($userId, $channel->getID());
+
+                if (!AuthenticationManager::authenticate($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD], $_REQUEST[self::USR_CHANNEL])) {
+                    $this->forwardRequest(['Invalid user information provided'], "index.php?view=registration");
+                }
+
+                $_SESSION[self::USR_CHANNEL] = $_REQUEST[self::USR_CHANNEL];
+
+                Util::redirect();
                 break;
 
             case self::POST_MSG:
@@ -87,6 +107,31 @@ class Controller extends BaseObject {
                 $user = AuthenticationManager::getAuthenticatedUser();
 
                 DataManager::publish(new Post(rand(), $user->getID(), $channel->getID(), $_REQUEST[self::POST_TITLE], $_REQUEST[self::POST_CONTENT], false));
+                break;
+
+            case self::ACTION_JOIN_CHANNEL:
+                $channel = DataManager::getChannelByName($_REQUEST[self::USR_CHANNEL]);
+                $registratedUsers = DataManager::getUsersByChannelId($channel->getID());
+
+                foreach ($registratedUsers as $user) {
+                    if ($user->getUsername() === $_REQUEST[self::USR_NAME]) {
+                        $this->forwardRequest(['User ' . $_REQUEST[self::USR_NAME] . ' is already registered!' ], "index.php?view=join");
+                    }
+                }
+
+                $user = DataManager::getUserByUsername($_REQUEST[self::USR_NAME]);
+                if (!$user)
+                    $this->forwardRequest(['Please registrate, the user ' . $_REQUEST[self::USR_NAME] . ' does not exists!' ], "index.php?view=register");
+
+                DataManager::registrateUser($user->getID(), $channel->getID());
+
+                if (!AuthenticationManager::authenticate($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD], $_REQUEST[self::USR_CHANNEL])) {
+                    $this->forwardRequest(['Invalid user information provided'], "index.php?view=registration");
+                }
+
+                $_SESSION[self::USR_CHANNEL] = $_REQUEST[self::USR_CHANNEL];
+
+                Util::redirect();
                 break;
         }
     }
@@ -100,7 +145,10 @@ class Controller extends BaseObject {
         }
 
         if (count($errors) > 0) {
-            $target .= 'errors=' . urlencode(serialize($errors));
+            if (strpos($target, '='))
+                $target .= '&errors=' . urlencode(serialize($errors));
+            else
+                $target .= 'errors=' . urlencode(serialize($errors));
         }
         header('location: ' . $target);
         exit();

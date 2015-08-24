@@ -47,7 +47,7 @@ $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : null;
             <div class = "form-group">
                 <label for = "regChannel" class = "col-sm-4 control-label">Choose channel</label>
                 <div class = "col-sm-3">
-                    <select class = "form-control" id = "regChannel">
+                    <select class = "form-control" id = "regChannel" name = "channel">
                         <?php
                             $channels = DataManager::getChannels();
                             foreach($channels as $channel) { ?>
@@ -58,7 +58,7 @@ $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : null;
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-4 col-sm-3">
-                    <button type="submit" class="btn btn-default">Login</button>
+                    <button type="submit" class="btn btn-default">Registrate</button>
                 </div>
             </div> <!-- form-group -->
         </form>

@@ -123,10 +123,10 @@ class DataManager {
         return $channel;
     }
 
-    public static function getChannelByName($channel) {
+    public static function getChannelByName($channelName) {
         $channel = null;
         $con = self::getConnection();
-        $res = self::query($con, "SELECT channelId, name FROM channel WHERE name LIKE ?", array("%" . $channel . "%"));
+        $res = self::query($con, "SELECT channelId, name FROM channel WHERE name LIKE ?", array("%" . $channelName . "%"));
 
         if ($ch = self::fetchObject($res)) {
             $channel = new Channel($ch->channelId, $ch->name);
@@ -240,7 +240,7 @@ class DataManager {
         $channels = array();
         $con = self::getConnection();
         $res = self::query($con, "SELECT channelId FROM register WHERE personId = ?;", array($userId));
-        if ($ch = self::fetchObject($res)) {
+        while ($ch = self::fetchObject($res)) {
             $channels[] = self::getChannelById($ch->channelId);
         }
 
@@ -249,17 +249,24 @@ class DataManager {
         return $channels;
     }
 
-    public static function registerUser($firstName, $lastName, $username, $password, $channelId) {
+    public static function registrateUser($userId, $channelId) {
+        $con = self::getConnection();
+        self::query($con, 'BEGIN');
+        self::query($con, "INSERT INTO register (personId, channelId)
+                           VALUES (?, ?);", array($userId, $channelId));
+        self::query($con, 'COMMIT');
+        self::closeConnection($con);
+    }
+
+    public static function saveNewUser($firstName, $lastName, $username, $password) {
         $con = self::getConnection();
         self::query($con, 'BEGIN');
         self::query($con, "INSERT INTO person (firstName, lastName, username, passwordHash)
                            VALUES (?, ?, ?, ?);",
                            array($firstName, $lastName, $username, $password));
-
         $userId = self::lastInsertId($con);
-        self::query($con, "INSERT INTO register (personId, channelId)
-                           VALUES (?, ?);", array($userId, $channelId));
         self::query($con, 'COMMIT');
+
         self::closeConnection($con);
         return $userId;
     }

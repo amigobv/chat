@@ -11,15 +11,15 @@ include_once("views/partials/header.php");
 $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : null;
 ?>
 <div class="page-header">
-    <h2>Login</h2>
+    <h2>Join channel</h2>
 </div>
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        Please login in order to use the chat!
+        Enter your username, password and choose the channel you want to join!
     </div>
     <div class="panel-body">
-        <form class="form-horizontal" id = "loginForm" method="post" action="<?php echo Util::action('login');?>">
+        <form class="form-horizontal" id = "loginForm" method="post" action="<?php echo Util::action('join');?>">
             <div class="form-group">
                 <label for="inputName" class="col-sm-4 control-label">Username: </label>
                 <div class="col-sm-3">
