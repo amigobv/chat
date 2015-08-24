@@ -7,8 +7,6 @@
  */
 
 include_once("views/partials/header.php");
-
-$username = isset($_REQUEST['username']) ? $_REQUEST['username'] : null;
 ?>
 <div class="page-header">
     <h2>Join channel</h2>

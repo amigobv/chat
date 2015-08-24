@@ -44,7 +44,7 @@ if(isset($_GET['errors']))
                         <?php if ($user == null): ?>
                             <a href="index.php?view=registration"><span class="glyphicon glyphicon-user"></span> Sign Up</a>
                         <?php else: ?>
-                            <a href="index.php?view=user">
+                            <a href="index.php?view=userInfo">
                                 <span class="glyphicon glyphicon-user"></span>
                                 <?php echo Util::escape($user->getUserName()); ?>
                             </a>

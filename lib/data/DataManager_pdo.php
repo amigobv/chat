@@ -47,6 +47,7 @@ class DataManager {
             }
             $i++;
         }
+
         $statement->execute();
         return $statement;
     }
@@ -148,9 +149,9 @@ class DataManager {
     public static function getPostsByChannel($channelId) {
         $posts = array();
         $con = self::getConnection();
-        $res = self::query($con, "SELECT messageId, authorId, title, content, important FROM message WHERE channelId = ?;", array($channelId));
+        $res = self::query($con, "SELECT messageId, authorId, title, content, priority FROM message WHERE channelId = ?;", array($channelId));
         while ($message = self::fetchObject($res)) {
-            $posts[] = new Book($message->messageId, $message->authorId, $channelId, $message->title, $message->content, $message->important);
+            $posts[] = new Post($message->messageId, $message->authorId, $channelId, $message->title, $message->content, $message->priority);
         }
         self::close($res);
         self::closeConnection($con);
@@ -168,9 +169,9 @@ class DataManager {
     public static function getPostBySearchCriteria($term) {
         $posts = array();
         $con = self::getConnection();
-        $res = self::query($con, "SELECT messageId, authorId, channelId, title, content, important FROM message WHERE title LIKE ?;", array("%" . $term . "%"));
+        $res = self::query($con, "SELECT messageId, authorId, channelId, title, content, priority FROM message WHERE title LIKE ?;", array("%" . $term . "%"));
         while ($message = self::fetchObject($res)) {
-            $posts[] = new Book($message->messageId, $message->author, $message->channelId, $message->title, $message->content, $message->important);
+            $posts[] = new Post($message->messageId, $message->author, $message->channelId, $message->title, $message->content, $message->priority);
         }
         self::close($res);
         self::closeConnection($con);
@@ -292,5 +293,27 @@ class DataManager {
         self::query($con, 'COMMIT;');
         self::closeConnection($con);
         return $orderId;
+    }
+
+    /**
+     * publish a message
+     *
+     * note: wrapped in a transaction
+     *
+     * @param integer $userId id of the ordering user
+     * @param array $bookIds integers of book ids
+     * @param string $nameOnCard cc name
+     * @param string $cardNumber cc number
+     * @return integer
+     */
+    public static function publishMessage($userId, $channelId, $title, $content, $priority) {
+        $con = self::getConnection();
+        self::query($con, 'BEGIN;');
+        self::query($con, "INSERT INTO message (authorId, channelId, title, content, priority) VALUES (?, ?, ?, ?, ?);",
+                          array($userId, $channelId, $title, $content, $priority));
+        $postId = self::lastInsertId($con);
+        self::query($con, 'COMMIT;');
+        self::closeConnection($con);
+        return $postId;
     }
 }

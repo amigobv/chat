@@ -34,9 +34,9 @@ $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : null;
                                         </a>
 
                                         <?php if($message->getProminence()): ?>
-                                            <a class = "glyphicon glyphicon-star custom-star" href = '#'></a>
+                                            <a class = "glyphicon glyphicon-star custom-star" href = 'index.php?view=welcome&action=enable' id = "<?php echo $message->getTitle(); ?>"></a>
                                         <?php else: ?>
-                                            <a href = '#'><span class = "glyphicon glyphicon-star-empty custom-star"></span></a>
+                                            <a href = 'index.php?view=welcome&action=disable' id = "<?php echo $message->getTitle(); ?>"><span class = "glyphicon glyphicon-star-empty custom-star"></span></a>
                                         <?php endif; ?>
                                     </small>
                                 </div>

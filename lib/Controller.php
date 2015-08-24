@@ -106,7 +106,7 @@ class Controller extends BaseObject {
                 $channel = DataManager::getChannelByName($_SESSION['channel']);
                 $user = AuthenticationManager::getAuthenticatedUser();
 
-                DataManager::publish(new Post(rand(), $user->getID(), $channel->getID(), $_REQUEST[self::POST_TITLE], $_REQUEST[self::POST_CONTENT], false));
+                DataManager::publishMessage($user->getID(), $channel->getID(), $_REQUEST[self::POST_TITLE], $_REQUEST[self::POST_CONTENT], 0);
                 break;
 
             case self::ACTION_JOIN_CHANNEL:
