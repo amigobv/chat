@@ -15,6 +15,8 @@ $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : null;
                         $channel = DataManager::getChannelByName($_SESSION['channel']);
                         $messages = DataManager::getPostsByChannel($channel->getID());
 
+                        Util::stable_uasort($messages, 'Util::MessageCmp');
+
                         foreach($messages as $message) {
                         ?>
                         <li class = "media">
@@ -27,17 +29,37 @@ $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : null;
                                         <a class = "pull-left" href = "#">
                                             <span class = "glyphicon glyphicon-user">
                                                 <?php
-                                                $user = DataManager::getUserById($message->getAuthor());
-                                                echo $user->getUsername();
+                                                $author = DataManager::getUserById($message->getAuthor());
+                                                echo $author->getUsername();
                                                 ?>
                                             </span>
                                         </a>
 
-                                        <?php if($message->getProminence()): ?>
-                                            <a class = "glyphicon glyphicon-star custom-star" href = 'index.php?view=welcome&action=enable' id = "<?php echo $message->getTitle(); ?>"></a>
-                                        <?php else: ?>
-                                            <a href = 'index.php?view=welcome&action=disable' id = "<?php echo $message->getTitle(); ?>"><span class = "glyphicon glyphicon-star-empty custom-star"></span></a>
-                                        <?php endif; ?>
+                                        <?php
+                                        $status = $message->getStatus();
+                                        $id = $message->getID();
+                                        switch($status) {
+                                            case Status::UNREAD:
+                                                ?>
+                                                <a href = '#' id = "<?php echo $id; ?>" class = "glyphicon glyphicon-star-empty custom-star" onclick="setPrior(<?php echo $id; ?>)"></a>
+                                                <a href = '#' id = "<?php echo $id; ?>" class = "glyphicon glyphicon-remove customRemoveActive" onclick="removeMessage(<?php echo $id; ?>)"></a>
+                                                <?php
+                                                break;
+                                            case Status::READ:
+                                                ?>
+                                                <a href = '#' id = "<?php echo $id; ?>" class = "glyphicon glyphicon-star-empty custom-star" onclick="setPrior(<?php echo $id; ?>)"></a>
+                                                <?php
+                                                break;
+                                            case Status::PRIOR:
+                                                ?>
+                                                <a href = '#' id = "<?php echo $id; ?>" class = "glyphicon glyphicon-star custom-star" onclick="resetPrior(<?php echo $id; ?>)"></a>
+                                                <?php
+                                                break;
+                                            default:
+                                            case Status::DELETED:
+                                                break;
+                                        }
+                                        ?>
                                     </small>
                                 </div>
                             </div>

@@ -17,6 +17,10 @@ class Controller extends BaseObject {
     const ACTION_REGISTRATION = 'registrate';
     const ACTION_JOIN_CHANNEL = 'join';
 
+    const AJAX_SET_PRIO = "setPriority";
+    const AJAX_RESET_PRIO = "resetPriority";
+    const AJAX_DELETE_MESSAGE = "delete";
+
     const USR_FIRST_NAME = 'firstName';
     const USR_LAST_NAME = 'lastName';
     const USR_NAME = 'username';
@@ -105,7 +109,6 @@ class Controller extends BaseObject {
             case self::POST_MSG:
                 $channel = DataManager::getChannelByName($_SESSION['channel']);
                 $user = AuthenticationManager::getAuthenticatedUser();
-
                 DataManager::publishMessage($user->getID(), $channel->getID(), $_REQUEST[self::POST_TITLE], $_REQUEST[self::POST_CONTENT], 0);
                 break;
 
@@ -132,6 +135,30 @@ class Controller extends BaseObject {
                 $_SESSION[self::USR_CHANNEL] = $_REQUEST[self::USR_CHANNEL];
 
                 Util::redirect();
+                break;
+
+            case  self::AJAX_SET_PRIO:
+                //echo "AJAX_SET_PRIO";
+                if (isset($_POST) && $_POST) {
+                    DataManager::changePostStatus($_POST['id'], Status::PRIOR);
+                    echo "index.php?view=welcome";
+                }
+                break;
+
+            case self::AJAX_RESET_PRIO:
+                //echo "AJAX_RESET_PRIO";
+                if (isset($_POST) && $_POST) {
+                    DataManager::changePostStatus($_POST['id'], Status::READ);
+                    echo "index.php?view=welcome";
+                }
+                break;
+
+            case self::AJAX_DELETE_MESSAGE:
+                //echo "AJAX_DELETE_MESSAGE";
+                if (isset($_POST) && $_POST) {
+                    DataManager::changePostStatus($_POST['id'], Status::DELETED);
+                    echo "index.php?view=welcome";
+                }
                 break;
         }
     }

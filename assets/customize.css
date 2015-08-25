@@ -19,6 +19,13 @@
     color: #FFA731;
 }
 
+.container .customRemoveActive {
+    color: #FC000D;
+}
+
+.container .customRemoveInctive {
+    color: #7F7F7F;
+}
 .navbar-custom {
     color: #FFFFFF;
     background-color: #032746;

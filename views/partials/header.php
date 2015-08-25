@@ -11,7 +11,7 @@ if(isset($_GET['errors']))
 		<meta http-equiv="Content-Type" content="test/html">
 		<meta charset="UTF-8">
 		
-		<title>Chatroom</title>
+		<title>Slack light</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		
 		<link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">

@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `Message` (
   `channelId` int(11) NOT NULL,
   `title` varchar(45) NOT NULL,
   `content` text NOT NULL,
-  `priority` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
   PRIMARY KEY(`messageId`),
   CONSTRAINT `fk_user_`
     FOREIGN KEY (`authorId`)

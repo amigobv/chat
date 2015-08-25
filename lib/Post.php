@@ -6,11 +6,6 @@
  * Time: 21:12
  */
 
-abstract class Status {
-    const UNREAD = 0;
-    const READ = 1;
-}
-
 class Post extends Entity {
 
     /*
@@ -22,11 +17,6 @@ class Post extends Entity {
      * @var enum
      */
     private $status;
-
-    /*
-     * @var boolean
-     */
-    private $prominence;
 
     /*
      * @var string
@@ -43,15 +33,14 @@ class Post extends Entity {
      */
     private $channelId;
 
-    public function __construct($id, $channelId, $authorId, $title, $content, $prominence) {
+    public function __construct($id, $channelId, $authorId, $title, $content, $status) {
         parent::__construct($id);
 
         $this->channelId = $channelId;
         $this->title = $title;
         $this->content = $content;
         $this->authorId = $authorId;
-        $this->prominence = (bool)$prominence;
-        $this->status = Status::UNREAD;
+        $this->status = $status;
     }
 
     public function getChannelId() {
@@ -78,11 +67,11 @@ class Post extends Entity {
         $this->status = Status::READ;
     }
 
-    public function setProminence($prominence) {
-        $this->prominence = (bool) $prominence;
+    public function setPrior() {
+        $this->status = Status::PRIOR;
     }
 
-    public function getProminence() {
-        return $this->prominence;
+    public function delete() {
+        $this->delete();
     }
 }

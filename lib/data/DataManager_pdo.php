@@ -149,10 +149,14 @@ class DataManager {
     public static function getPostsByChannel($channelId) {
         $posts = array();
         $con = self::getConnection();
-        $res = self::query($con, "SELECT messageId, authorId, title, content, priority FROM message WHERE channelId = ?;", array($channelId));
+        $res = self::query($con, "SELECT messageId, authorId, title, content, status FROM message WHERE channelId = ?;", array($channelId));
         while ($message = self::fetchObject($res)) {
-            $posts[] = new Post($message->messageId, $message->authorId, $channelId, $message->title, $message->content, $message->priority);
+            $post = new Post($message->messageId, $channelId, $message->authorId, $message->title, $message->content, $message->status);
+            if ($post->getStatus() != Status::DELETED) {
+                $posts[] = $post;
+            }
         }
+
         self::close($res);
         self::closeConnection($con);
         return $posts;
@@ -169,9 +173,9 @@ class DataManager {
     public static function getPostBySearchCriteria($term) {
         $posts = array();
         $con = self::getConnection();
-        $res = self::query($con, "SELECT messageId, authorId, channelId, title, content, priority FROM message WHERE title LIKE ?;", array("%" . $term . "%"));
+        $res = self::query($con, "SELECT messageId, authorId, channelId, title, content, status FROM message WHERE title LIKE ?;", array("%" . $term . "%"));
         while ($message = self::fetchObject($res)) {
-            $posts[] = new Post($message->messageId, $message->author, $message->channelId, $message->title, $message->content, $message->priority);
+            $posts[] = new Post($message->messageId, $message->author, $message->channelId, $message->title, $message->content, $message->status);
         }
         self::close($res);
         self::closeConnection($con);
@@ -230,7 +234,6 @@ class DataManager {
 
         foreach ($ids as $id) {
             $users[] = self::getUserById($id);
-
         }
 
         return $users;
@@ -271,29 +274,6 @@ class DataManager {
         self::closeConnection($con);
         return $userId;
     }
-    /**
-     * publish a message
-     *
-     * note: wrapped in a transaction
-     *
-     * @param integer $userId id of the ordering user
-     * @param array $bookIds integers of book ids
-     * @param string $nameOnCard cc name
-     * @param string $cardNumber cc number
-     * @return integer
-     */
-    public static function createOrder($userId, $bookIds, $nameOnCard, $cardNumber) {
-        $con = self::getConnection();
-        self::query($con, 'BEGIN;');
-        self::query($con, "INSERT INTO orders (userId, creditCardNumber, creditCardHolder) VALUES (?, ?, ?);", array($userId, $cardNumber, $nameOnCard));
-        $orderId = self::lastInsertId($con);
-        foreach ($bookIds as $bookId) {
-            self::query($con, "INSERT INTO orderedbooks (orderId, bookId) VALUES (?, ?);", array($orderId, $bookId));
-        }
-        self::query($con, 'COMMIT;');
-        self::closeConnection($con);
-        return $orderId;
-    }
 
     /**
      * publish a message
@@ -306,14 +286,22 @@ class DataManager {
      * @param string $cardNumber cc number
      * @return integer
      */
-    public static function publishMessage($userId, $channelId, $title, $content, $priority) {
+    public static function publishMessage($userId, $channelId, $title, $content, $status) {
         $con = self::getConnection();
         self::query($con, 'BEGIN;');
-        self::query($con, "INSERT INTO message (authorId, channelId, title, content, priority) VALUES (?, ?, ?, ?, ?);",
-                          array($userId, $channelId, $title, $content, $priority));
+        self::query($con, "INSERT INTO message (authorId, channelId, title, content, status) VALUES (?, ?, ?, ?, ?);",
+                          array($userId, $channelId, $title, $content, $status));
         $postId = self::lastInsertId($con);
         self::query($con, 'COMMIT;');
         self::closeConnection($con);
         return $postId;
+    }
+
+    public static function changePostStatus($id, $status) {
+        $con = self::getConnection();
+        self::query($con, 'BEGIN');
+        self::query($con, "UPDATE message SET status = ? WHERE messageId = ?;", array($status, $id));
+        self::query($con, 'COMMIT');
+        self::closeConnection($con);
     }
 }
