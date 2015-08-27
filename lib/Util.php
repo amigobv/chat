@@ -80,7 +80,7 @@ class Util extends BaseObject {
             $post2->getStatus() == Status::PRIOR)
             return 0;
 
-        return ($post2->getStatus() < $post1->getStatus()) ? 1 : -1;
+        return ($post2->getStatus() > $post1->getStatus()) ? 1 : -1;
     }
 }
 ?>

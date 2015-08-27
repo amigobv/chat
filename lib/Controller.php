@@ -63,6 +63,7 @@ class Controller extends BaseObject {
                 }
 
                 $_SESSION[self::USR_CHANNEL] = $_REQUEST[self::USR_CHANNEL];
+                $_SESSION['username'] = $_REQUEST[self::USR_NAME];
 
                 Util::redirect();
                 break;
@@ -138,7 +139,6 @@ class Controller extends BaseObject {
                 break;
 
             case  self::AJAX_SET_PRIO:
-                //echo "AJAX_SET_PRIO";
                 if (isset($_POST) && $_POST) {
                     DataManager::changePostStatus($_POST['id'], Status::PRIOR);
                     echo "index.php?view=welcome";
@@ -146,7 +146,6 @@ class Controller extends BaseObject {
                 break;
 
             case self::AJAX_RESET_PRIO:
-                //echo "AJAX_RESET_PRIO";
                 if (isset($_POST) && $_POST) {
                     DataManager::changePostStatus($_POST['id'], Status::READ);
                     echo "index.php?view=welcome";
@@ -154,7 +153,6 @@ class Controller extends BaseObject {
                 break;
 
             case self::AJAX_DELETE_MESSAGE:
-                //echo "AJAX_DELETE_MESSAGE";
                 if (isset($_POST) && $_POST) {
                     DataManager::changePostStatus($_POST['id'], Status::DELETED);
                     echo "index.php?view=welcome";

@@ -1,6 +1,6 @@
 <?php
 include_once("views/partials/header.php");
-$username = isset($_REQUEST['username']) ? $_REQUEST['username'] : null;
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
 ?>
 
 <?php if (AuthenticationManager::isAuthenticated()) : ?>
@@ -18,6 +18,13 @@ $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : null;
                         Util::stable_uasort($messages, 'Util::MessageCmp');
 
                         foreach($messages as $message) {
+                            $author = DataManager::getUserById($message->getAuthor());
+
+                            if ($message->getStatus() == Status::UNREAD &&
+                                $author->getUsername() != $username) {
+                                DataManager::changePostStatus($message->getID(), Status::READ);
+                                $message->setRead();
+                            }
                         ?>
                         <li class = "media">
                             <div class = "media-body <?php echo ($message->getStatus() == Status::UNREAD) ? 'mark' : '' ; ?> ">
