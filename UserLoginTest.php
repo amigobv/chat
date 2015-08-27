@@ -26,8 +26,7 @@
             <h4>Unit testing</h4>
             <button class="btn btn-default" type="button" onclick="UserLoginTest()">User Login</button>
             <button class="btn btn-default" type="button" onclick="RegistrationTest()">Registration</button>
-            <button class="btn btn-default" type="button" onclick="RegistrationTest()">New Post</button>
-            <button class="btn btn-default" type="button" onclick="RegistrationTest()">Favorite</button>
+            <button class="btn btn-default" type="button" onclick="PostingTest()">New Post</button>
         </div>
 
         <script src="assets/jquery-1.11.3.min.js"></script>
