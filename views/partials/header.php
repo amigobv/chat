@@ -8,7 +8,7 @@ if(isset($_GET['errors']))
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="test/html">
+		<meta http-equiv="Content-Type" content="text/html">
 		<meta charset="UTF-8">
 		
 		<title>Slack light</title>

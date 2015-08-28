@@ -58,6 +58,7 @@ class Controller extends BaseObject {
 
         switch($action) {
             case self::ACTION_LOGIN:
+                echo "Action Login";
                 if (!AuthenticationManager::authenticate($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD], $_REQUEST[self::USR_CHANNEL])) {
                     $this->forwardRequest(['Invalid user information provided']);
                 }

@@ -27,8 +27,6 @@ class Util extends BaseObject {
             $page = $_REQUEST['page'];
         }
 
-        print_r($page);
-
         Header('Location: ' . $page);
     }
 
