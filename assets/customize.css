@@ -30,3 +30,18 @@
     color: #FFFFFF;
     background-color: #032746;
 }
+
+.dropdown-menu {
+    min-width: 0px !important;
+}
+
+.dropdown-menu .btn-link:hover {
+    color: #032746;
+    text-decoration: none;
+}
+
+.btn-link {
+    color: #ffffff;
+    border-color: #ffffff;
+}
+

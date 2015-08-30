@@ -19,12 +19,6 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
 
                         foreach($messages as $message) {
                             $author = DataManager::getUserById($message->getAuthor());
-
-                            if ($message->getStatus() == Status::UNREAD &&
-                                $author->getUsername() != $username) {
-                                DataManager::changePostStatus($message->getID(), Status::READ);
-                                $message->setRead();
-                            }
                         ?>
                         <li class = "media">
                             <div class = "media-body <?php echo ($message->getStatus() == Status::UNREAD) ? 'mark' : '' ; ?> ">
@@ -72,7 +66,15 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
                             </div>
                             <hr>
                         </li>
-                        <?php } ?>
+                        <?php
+                            if ($message->getStatus() == Status::UNREAD && $author->getUsername() != $username) {
+                                print_r("Read status");
+                                //$message->setRead();
+                                //Die();
+                                DataManager::changePostStatus($message->getID(), Status::READ);
+                                $message->setRead();
+                            }
+                        } ?>
                     </ul>
                 </div>
                 <div class = "panel-footer">
@@ -138,18 +140,6 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
                     <label for="inputPassword" class="col-sm-4 control-label">Password</label>
                     <div class="col-sm-3">
                         <input type="password" class="form-control" id="inputPassword" name="password" placeholder="try 'scm4'" required>
-                    </div>
-                </div>
-                <div class = "form-group">
-                    <label for = "loginChannel" class = "col-sm-4 control-label">Choose channel</label>
-                    <div class = "col-sm-3">
-                        <select class = "form-control" id = "loginChannel" name = "channel" required>
-                            <?php
-                            $channels = DataManager::getChannels();
-                            foreach($channels as $channel) { ?>
-                                <option><?php echo $channel->getName();?></option>
-                            <?php } ?>
-                        </select>
                     </div>
                 </div>
                 <div class="form-group">

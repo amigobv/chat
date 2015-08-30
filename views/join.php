@@ -21,7 +21,7 @@ include_once("views/partials/header.php");
             <div class="form-group">
                 <label for="inputName" class="col-sm-4 control-label">Username: </label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="username" name="username" placeholder="try 'scm4'" value="<?php echo htmlentities($username)?>" required>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="try 'scm4'" required>
                 </div>
             </div>
             <div class="form-group">

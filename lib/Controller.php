@@ -15,6 +15,7 @@ class Controller extends BaseObject {
     const ACTION_LOGIN = 'login';
     const ACTION_LOGOUT = 'logout';
     const ACTION_REGISTRATION = 'registrate';
+    const ACTION_CHANGE_CHANNEL = 'changeChannel';
     const ACTION_JOIN_CHANNEL = 'join';
 
     const AJAX_SET_PRIO = "setPriority";
@@ -25,7 +26,9 @@ class Controller extends BaseObject {
     const USR_LAST_NAME = 'lastName';
     const USR_NAME = 'username';
     const USR_PASSWORD = 'password';
+    const USR_CHANNELS = 'channels';
     const USR_CHANNEL = 'channel';
+
 
     const POST_MSG = 'postMessage';
 
@@ -58,13 +61,15 @@ class Controller extends BaseObject {
 
         switch($action) {
             case self::ACTION_LOGIN:
-                echo "Action Login";
-                if (!AuthenticationManager::authenticate($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD], $_REQUEST[self::USR_CHANNEL])) {
+                if (!AuthenticationManager::authenticate($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD])) {
                     $this->forwardRequest(['Invalid user information provided']);
                 }
 
-                $_SESSION[self::USR_CHANNEL] = $_REQUEST[self::USR_CHANNEL];
                 $_SESSION['username'] = $_REQUEST[self::USR_NAME];
+
+                $user = AuthenticationManager::getAuthenticatedUser();
+                $channels = DataManager::getChannelsByUserId($user->getID());
+                $_SESSION['channel'] = $channels[0]->getName();
 
                 Util::redirect();
                 break;
@@ -78,32 +83,37 @@ class Controller extends BaseObject {
                 break;
 
             case self::ACTION_REGISTRATION:
-                $channel = DataManager::getChannelByName($_REQUEST[self::USR_CHANNEL]);
-                $registratedUsers = DataManager::getUsersByChannelId($channel->getID());
+                $channels = $_REQUEST['channels'];
+                foreach($channels as $ch) {
+                    $channel = DataManager::getChannelByName($ch);
+                    $registratedUsers = DataManager::getUsersByChannelId($channel->getID());
 
-                foreach ($registratedUsers as $user) {
-                    if ($user->getUsername() === $_REQUEST[self::USR_NAME]) {
-                        $this->forwardRequest(['The username ' . $_REQUEST[self::USR_NAME] . ' is already used!'], 'index.php?view=registration');
+                    foreach ($registratedUsers as $user) {
+                        if ($user->getUsername() === $_REQUEST[self::USR_NAME]) {
+                            $this->forwardRequest(['The username ' . $_REQUEST[self::USR_NAME] . ' is already used!'], 'index.php?view=registration');
+                        }
                     }
+
+                    $user = DataManager::getUserByUsername($_REQUEST[self::USR_NAME]);
+                    $userId = null;
+                    if ($user)
+                        $userId = $user->getID();
+                    else
+                        $userId = DataManager::saveNewUser($_REQUEST[self::USR_FIRST_NAME],
+                            $_REQUEST[self::USR_LAST_NAME],
+                            $_REQUEST[self::USR_NAME],
+                            AuthenticationManager::getHash($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD]));
+
+                    DataManager::registrateUser($userId, $channel->getID());
                 }
 
-                $user = DataManager::getUserByUsername($_REQUEST[self::USR_NAME]);
-                $userId = null;
-                if ($user)
-                    $userId = $user->getID();
-                else
-                    $userId = DataManager::saveNewUser($_REQUEST[self::USR_FIRST_NAME],
-                                                          $_REQUEST[self::USR_LAST_NAME],
-                                                          $_REQUEST[self::USR_NAME],
-                                                          AuthenticationManager::getHash($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD]));
-
-                DataManager::registrateUser($userId, $channel->getID());
-
-                if (!AuthenticationManager::authenticate($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD], $_REQUEST[self::USR_CHANNEL])) {
+                if (!AuthenticationManager::authenticate($_REQUEST[self::USR_NAME], $_REQUEST[self::USR_PASSWORD])) {
                     $this->forwardRequest(['Invalid user information provided'], "index.php?view=registration");
                 }
 
-                $_SESSION[self::USR_CHANNEL] = $_REQUEST[self::USR_CHANNEL];
+                $_SESSION[self::USR_CHANNELS] = $_REQUEST[self::USR_CHANNELS];
+                // first channel should be selected as default channel
+                $_SESSION['channel'] = $channels[0];
 
                 Util::redirect();
                 break;
@@ -112,6 +122,13 @@ class Controller extends BaseObject {
                 $channel = DataManager::getChannelByName($_SESSION['channel']);
                 $user = AuthenticationManager::getAuthenticatedUser();
                 DataManager::publishMessage($user->getID(), $channel->getID(), $_REQUEST[self::POST_TITLE], $_REQUEST[self::POST_CONTENT], 0);
+                break;
+
+            case self::ACTION_CHANGE_CHANNEL:
+                //print_r($_REQUEST);
+                $_SESSION['channel'] = $_REQUEST['selectedChannel'];
+
+                Util::redirect();
                 break;
 
             case self::ACTION_JOIN_CHANNEL:

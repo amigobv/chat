@@ -7,7 +7,7 @@
  */
 
 include_once("views/partials/header.php");
-
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
 ?>
 <div class="page-header">
     <h2>Registration</h2>
@@ -38,21 +38,21 @@ include_once("views/partials/header.php");
                 </div>
             </div>
             <div class="form-group">
-                <label for="inputPassword" class="col-sm-4 control-label">Password</label>
+                <label for="inputPassword" class="col-sm-4 control-label">Password:</label>
                 <div class="col-sm-3">
                     <input type="password" class="form-control" id="inputPassword" name="password" placeholder="try 'scm4'" required>
                 </div>
             </div>
             <div class = "form-group">
-                <label for = "regChannel" class = "col-sm-4 control-label">Choose channel</label>
+                <label for="channel" class="col-sm-4 control-label">Channel:</label>
                 <div class = "col-sm-3">
-                    <select class = "form-control" id = "regChannel" name = "channel">
                         <?php
                             $channels = DataManager::getChannels();
                             foreach($channels as $channel) { ?>
-                                <option><?php echo$channel->getName();?></option>
+                                <div class="checkbox">
+                                    <label><input type="checkbox" name="channels[]" value="<?php echo $channel->getName();?>"><?php echo $channel->getName();?></label>
+                                </div>
                             <?php } ?>
-                    </select>
                 </div>
             </div>
             <div class="form-group">

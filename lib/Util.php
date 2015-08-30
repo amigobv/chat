@@ -80,5 +80,11 @@ class Util extends BaseObject {
 
         return ($post2->getStatus() > $post1->getStatus()) ? 1 : -1;
     }
+
+    public static function StatusCb($message) {
+        DataManager::changePostStatus($message->getID(), Status::READ);
+        $message->setRead();
+        self::redirect("index.php");
+    }
 }
 ?>

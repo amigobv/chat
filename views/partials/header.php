@@ -36,6 +36,37 @@ if(isset($_GET['errors']))
 
 
             <div class="navbar-collapse collapse navbar-custom" id="bs-navbar-collapse-1">
+                <?php if ($user != null): ?>
+                    <?php
+                    $user = AuthenticationManager::getAuthenticatedUser();
+                    $channels = DataManager::getChannelsByUserId($user->getID());
+                    ?>
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown">
+                                <?php
+                                if (isset($_SESSION['channel']) && $_SESSION['channel'])
+                                    echo $_SESSION['channel'];
+                                ?>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu channel" role="menu">
+                                <?php
+                                foreach($channels as $channel) {
+                                    ?>
+                                    <li>
+                                         <form role="form" method="post" action="<?php echo Util::action('changeChannel'); ?>">
+                                             <input class="btn btn-link btn-md" role="button" type="submit" name="selectedChannel" value="<?php echo $channel->getName()?>" />
+                                         </form>
+                                    </li>
+                                <?php
+                                }
+                                ?>
+                            </ul>
+                        </li>
+                    </ul>
+                <?php endif; ?>
+
                 <ul class="nav navbar-nav navbar-right ">
                     <li>
                         <a href="index.php?view=join"><span class="glyphicon glyphicon-comment"></span> Join channel</a>
