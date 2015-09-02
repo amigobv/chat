@@ -27,26 +27,3 @@ function resetPrior(identity) {
             document.location.href = data;
         });
 }
-
-
-function updateChat() {
-    //console.log("Update chat");
-    var chatWall = $(".channelName").text();
-
-    $.ajax({
-        type: "POST",
-        url: "ajax.php",
-        data: {action: "update", channel: chatWall},
-        dataType: "html",
-        success: function(data) {
-            $(".messageContainer").empty();
-            $(".messageContainer").html(data);
-        }
-    });
-
-    setTimeout(updateChat, 5000);
-}
-
-$(document).ready(function() {
-    setTimeout(updateChat, 5000);
-});

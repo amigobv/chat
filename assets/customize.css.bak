@@ -1,10 +1,5 @@
 .panel-height {
-    height: 500px;
-    overflow-y: scroll;
-}
-
-.favorite{
-    height: 150px;
+    height: 700px;
     overflow-y: scroll;
 }
 

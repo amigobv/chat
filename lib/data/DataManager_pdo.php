@@ -7,7 +7,7 @@
  *
  * @package
  * @subpackage
- * @author     John Doe <jd@fbi.gov>
+ * @author
  */
 class DataManager {
 
@@ -151,8 +151,11 @@ class DataManager {
         $con = self::getConnection();
         $res = self::query($con, "SELECT messageId, authorId, title, content, status FROM message WHERE channelId = ?;", array($channelId));
         while ($message = self::fetchObject($res)) {
-            $post = new Post($message->messageId, $channelId, $message->authorId, $message->title, $message->content, $message->status);
-            if ($post->getStatus() != Status::DELETED) {
+            // TODO: get status
+            if ($message->status != Status::DELETED) {
+                $status = self::getPostStatus($message->messageId);
+
+                $post = new Post($message->messageId, $channelId, $message->authorId, $message->title, $message->content, $status);
                 $posts[] = $post;
             }
         }
@@ -161,27 +164,6 @@ class DataManager {
         self::closeConnection($con);
         return $posts;
     }
-
-    /**
-     * get the posts per search term
-     *
-     * note: search via LIKE
-     *
-     * @param string $term search term: post title string match
-     * @return array of Post-items
-     */
-    public static function getPostBySearchCriteria($term) {
-        $posts = array();
-        $con = self::getConnection();
-        $res = self::query($con, "SELECT messageId, authorId, channelId, title, content, status FROM message WHERE title LIKE ?;", array("%" . $term . "%"));
-        while ($message = self::fetchObject($res)) {
-            $posts[] = new Post($message->messageId, $message->author, $message->channelId, $message->title, $message->content, $message->status);
-        }
-        self::close($res);
-        self::closeConnection($con);
-        return $posts;
-    }
-
 
     /**
      * get the User item by id
@@ -253,6 +235,19 @@ class DataManager {
         return $channels;
     }
 
+    public static function getRegistrationId($userId, $channelId) {
+        $id = null;
+        $con = self::getConnection();
+        $res = self::query($con, "SELECT regId FROM register WHERE personId = ? AND channelId = ?", array($userId, $channelId));
+        if ($reg = self::fetchObject($res)) {
+            $id = $reg->regId;
+        }
+
+        self::close($res);
+        self::closeConnection($con);
+        return $id;
+    }
+
     public static function registrateUser($userId, $channelId) {
         $con = self::getConnection();
         self::query($con, 'BEGIN');
@@ -288,10 +283,17 @@ class DataManager {
      */
     public static function publishMessage($userId, $channelId, $title, $content, $status) {
         $con = self::getConnection();
+
+        $users = self::getUsersByChannelId($channelId);
         self::query($con, 'BEGIN;');
         self::query($con, "INSERT INTO message (authorId, channelId, title, content, status) VALUES (?, ?, ?, ?, ?);",
                           array($userId, $channelId, $title, $content, $status));
         $postId = self::lastInsertId($con);
+        foreach($users as $user) {
+            $regId = self::getRegistrationId($user->getId(), $channelId);
+            self::query($con, "INSERT INTO chatwall (regId, postId, status) VALUES (?, ?, ?)",
+                          array($regId, $postId, Status::UNREAD));
+        }
         self::query($con, 'COMMIT;');
         self::closeConnection($con);
         return $postId;
@@ -300,8 +302,20 @@ class DataManager {
     public static function changePostStatus($id, $status) {
         $con = self::getConnection();
         self::query($con, 'BEGIN');
-        self::query($con, "UPDATE message SET status = ? WHERE messageId = ?;", array($status, $id));
+        self::query($con, "UPDATE chatwall SET status = ? WHERE postId = ?;", array($status, $id));
         self::query($con, 'COMMIT');
         self::closeConnection($con);
+    }
+
+    public static function getPostStatus($postId) {
+        $status = null;
+        $con = self::getConnection();
+        $res = self::query($con, "SELECT status FROM chatwall WHERE postId = ?;", array($postId));
+        if ($stat = self::fetchObject($res)) {
+            $status = $stat->status;
+        }
+        self::close($res);
+        self::closeConnection($con);
+        return $status;
     }
 }

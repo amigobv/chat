@@ -21,7 +21,6 @@ class Controller extends BaseObject {
     const AJAX_SET_PRIO = "setPriority";
     const AJAX_RESET_PRIO = "resetPriority";
     const AJAX_DELETE_MESSAGE = "delete";
-    const AJAX_UPDATE_CHAT = "update";
 
     const USR_FIRST_NAME = 'firstName';
     const USR_LAST_NAME = 'lastName';
@@ -176,30 +175,6 @@ class Controller extends BaseObject {
                     DataManager::changePostStatus($_POST['id'], Status::DELETED);
                     echo "index.php?view=welcome";
                 }
-                break;
-
-            case self::AJAX_UPDATE_CHAT:
-                if (isset($_POST) && $_POST) {
-                    $channel = DataManager::getChannelByName($_REQUEST['channel']);
-                    $messages = DataManager::getPostsByChannel($channel->getID());
-
-                    $return = "";
-                    foreach($messages as $message) {
-                        if ($message->getStatus() != Status::PRIOR)
-                            $return .= Viewtility::viewMessage($message);
-                    }
-
-                    echo $return;
-                    /*
-                    $return = array();
-                    foreach($messages as $message) {
-                        $return[] = $message->toJson();
-                    }
-
-                    echo json_encode($return);
-                    */
-                }
-
                 break;
         }
     }
