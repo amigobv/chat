@@ -7,10 +7,10 @@
  */
 
 class Viewtility extends BaseObject {
-    public static function viewMessage($message) {
+    public static function viewMessage($message, $status) {
         ?>
             <li class = 'media'>
-                <div class = 'media-body <?php echo ($message->getStatus() == Status::UNREAD) ? 'mark' : ' ' ; ?> '>
+                <div class = 'media-body <?php echo ($status == Status::UNREAD) ? 'mark' : ' ' ; ?> '>
                     <p class='lead'><?php echo $message->getTitle(); ?><p>
                         <?php echo $message->getContent(); ?>
                         <br>
@@ -26,7 +26,6 @@ class Viewtility extends BaseObject {
                             </a>
 
                             <?php
-                            $status = $message->getStatus();
                             $id = $message->getID();
                             switch($status) {
                                 case Status::UNREAD:
@@ -36,6 +35,12 @@ class Viewtility extends BaseObject {
                                     <?php
                                     break;
                                 case Status::READ:
+                                    ?>
+                                    <a href = '#' id = '<?php echo $id; ?>' class = 'glyphicon glyphicon-star-empty custom-star' onclick='setPrior(<?php echo $id; ?>)'></a>
+                                    <a href = '#' id = "<?php echo $id; ?>" class = 'glyphicon glyphicon-remove customRemoveActive' onclick='removeMessage(<?php echo $id; ?>)'></a>
+                                    <?php
+                                    break;
+                                case Status::ANSWERED:
                                     ?>
                                     <a href = '#' id = '<?php echo $id; ?>' class = 'glyphicon glyphicon-star-empty custom-star' onclick='setPrior(<?php echo $id; ?>)'></a>
                                     <?php

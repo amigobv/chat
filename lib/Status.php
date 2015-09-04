@@ -8,6 +8,7 @@
 abstract class Status {
     const UNREAD = 0;
     const READ = 1;
-    const PRIOR = 2;
-    const DELETED = 3;
+    const ANSWERED = 2;
+    const PRIOR = 3;
+    const DELETED = 4;
 }

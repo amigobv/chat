@@ -73,6 +73,7 @@ class Util extends BaseObject {
         return;
     }
 
+    /*
     public static function MessageCmp($post1, $post2) {
         if ($post1->getStatus() == Status::PRIOR &&
             $post2->getStatus() == Status::PRIOR)
@@ -80,5 +81,6 @@ class Util extends BaseObject {
 
         return ($post2->getStatus() > $post1->getStatus()) ? 1 : -1;
     }
+    */
 }
 ?>

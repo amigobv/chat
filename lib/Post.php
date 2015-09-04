@@ -59,23 +59,11 @@ class Post extends Entity {
         return $this->content;
     }
 
-    public function getStatus() {
-        return $this->status;
-    }
-
     public function setRead() {
         $this->status = Status::READ;
     }
 
-    public function setPrior() {
-        $this->status = Status::PRIOR;
-    }
-
-    public function delete() {
-        $this->delete();
-    }
-
-    public function toJson() {
-        return json_encode(get_object_vars($this));
+    public function exists() {
+        return $this->status != Status::DELETED;
     }
 }

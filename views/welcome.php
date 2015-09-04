@@ -1,9 +1,15 @@
 <?php
 include_once("views/partials/header.php");
-$username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
 ?>
 
 <?php if (AuthenticationManager::isAuthenticated()) : ?>
+    <?php
+        $currUserId = isset($_SESSION['username']) ? $_SESSION['username'] : null;
+        $currUser = null;
+        if ($currUserId) {
+            $currUser = DataManager::getUserById($currUserId);
+        }
+    ?>
     <div class = "chatContainer">
         <div class = "col-md-8">
             <div class="panel panel-info">
@@ -16,14 +22,14 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
                         $channel = DataManager::getChannelByName($_SESSION['channel']);
                         $messages = DataManager::getPostsByChannel($channel->getID());
 
-                        Util::stable_uasort($messages, 'Util::MessageCmp');
+                        //Util::stable_uasort($messages, 'Util::MessageCmp');
 
                         foreach($messages as $message) {
                             $author = DataManager::getUserById($message->getAuthor());
+                            $status = DataManager::getPostStatus($message->getId());
 
-                            $status = $message->getStatus();
                             if ($status == Status::PRIOR) {
-                                Viewtility::viewMessage($message);
+                                Viewtility::viewMessage($message, $status);
                             }
                         }?>
                 </ul>
@@ -39,22 +45,23 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
                         $channel = DataManager::getChannelByName($_SESSION['channel']);
                         $messages = DataManager::getPostsByChannel($channel->getID());
 
-                        Util::stable_uasort($messages, 'Util::MessageCmp');
+                        //Util::stable_uasort($messages, 'Util::MessageCmp');
 
                         foreach($messages as $message) {
                             $author = DataManager::getUserById($message->getAuthor());
+                            $status = DataManager::getPostStatus($message->getId());
+                            if ($status != Status::PRIOR && $status != Status::DELETED) {
+                                Viewtility::viewMessage($message, $status);
+                            }
 
-                            $status = $message->getStatus();
-                            if ($status != Status::PRIOR) {
-                                Viewtility::viewMessage($message);
+                            /*
+                            if ($currUser) {
+                                if ($status == Status::UNREAD && $author->getUsername() != $currUser->getUsername()) {
+                                    DataManager::changePostStatus($message->getID(), Status::READ);
+                                    $message->setRead();
+                                }
                             }
-                            if ($message->getStatus() == Status::UNREAD && $author->getUsername() != $username) {
-                                //print_r("Read status");
-                                //$message->setRead();
-                                //Die();
-                                DataManager::changePostStatus($message->getID(), Status::READ);
-                                $message->setRead();
-                            }
+                            */
                         } ?>
 
                     </ul>
@@ -115,7 +122,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
                 <div class="form-group">
                     <label for="inputName" class="col-sm-4 control-label">Username: </label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" id="username" name="username" placeholder="try 'scm4'" value="<?php echo htmlentities($username)?>" required>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="try 'scm4'" required>
                     </div>
                 </div>
                 <div class="form-group">

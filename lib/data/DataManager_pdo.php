@@ -151,7 +151,6 @@ class DataManager {
         $con = self::getConnection();
         $res = self::query($con, "SELECT messageId, authorId, title, content, status FROM message WHERE channelId = ?;", array($channelId));
         while ($message = self::fetchObject($res)) {
-            // TODO: get status
             if ($message->status != Status::DELETED) {
                 $status = self::getPostStatus($message->messageId);
 
@@ -289,13 +288,14 @@ class DataManager {
         self::query($con, "INSERT INTO message (authorId, channelId, title, content, status) VALUES (?, ?, ?, ?, ?);",
                           array($userId, $channelId, $title, $content, $status));
         $postId = self::lastInsertId($con);
+
         foreach($users as $user) {
-            $regId = self::getRegistrationId($user->getId(), $channelId);
-            self::query($con, "INSERT INTO chatwall (regId, postId, status) VALUES (?, ?, ?)",
-                          array($regId, $postId, Status::UNREAD));
+            self::query($con, "INSERT INTO chatwall (chId, postId, authorId, status) VALUES (?, ?, ?, ?)",
+                          array($channelId, $postId, $userId, Status::UNREAD));
         }
         self::query($con, 'COMMIT;');
         self::closeConnection($con);
+
         return $postId;
     }
 
@@ -317,5 +317,36 @@ class DataManager {
         self::close($res);
         self::closeConnection($con);
         return $status;
+    }
+
+    /**
+     * Attention: the returned messages do not contain any message text. Should only be used for the message id,
+     * the author and the status of a message in wall.
+     * @return array|Post
+     */
+    public static function getAllUnreadPostsByUserId($userId) {
+        $unreadPosts = array();
+        $con = self::getConnection();
+        $res = self::query($con, "SELECT chId, postId, authorId, status FROM chatwall WHERE status = ? AND (NOT authorId = ?);", array(Status::UNREAD, $userId));
+        while ($stat = self::fetchObject($res)) {
+            $unreadPosts[] = new Post($stat->postId, null, $stat->authorId, null, null, $stat->status);
+        }
+        self::close($res);
+        self::closeConnection($con);
+        return $unreadPosts;
+    }
+
+    public static function getAllUnansweredPosts($channelId) {
+        $unreadPosts = array();
+        $con = self::getConnection();
+        $res = self::query($con, "SELECT chId, postId, authorId, status FROM chatwall WHERE chId = ?;", array($channelId));
+        while ($stat = self::fetchObject($res)) {
+            if ($stat->status == Status::UNREAD || $stat->status == Status::READ) {
+                $unreadPosts[] = new Post($stat->postId, null, $stat->authorId, null, null, $stat->status);
+            }
+        }
+        self::close($res);
+        self::closeConnection($con);
+        return $unreadPosts;
     }
 }

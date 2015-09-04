@@ -30,7 +30,7 @@ function resetPrior(identity) {
 
 
 function updateChat() {
-    //console.log("Update chat");
+    console.log("Update chat");
     var chatWall = $(".channelName").text();
 
     $.ajax({

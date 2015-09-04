@@ -107,18 +107,24 @@ CREATE TABLE IF NOT EXISTS `Register` (
 
 CREATE TABLE IF NOT EXISTS `ChatWall` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `regId` int(11) NOT NULL,
+  `chId` int(11) NOT NULL,
   `postId` int(11) NOT NULL,
+  `authorId` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   PRIMARY KEY(`id`),
-  CONSTRAINT `fk_regId`
-    FOREIGN KEY (`regId`)
-    REFERENCES `fh_2015_scm4_1310307036`.`Register` (`regId`)
+  CONSTRAINT `fk_ch`
+    FOREIGN KEY (`chId`)
+    REFERENCES `fh_2015_scm4_1310307036`.`Channel` (`channelId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_postId`
     FOREIGN KEY (`postId`)
     REFERENCES `fh_2015_scm4_1310307036`.`Message` (`messageId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_authorId`
+    FOREIGN KEY (`authorId`)
+    REFERENCES `fh_2015_scm4_1310307036`.`Person` (`userId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

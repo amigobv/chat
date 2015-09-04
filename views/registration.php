@@ -7,7 +7,6 @@
  */
 
 include_once("views/partials/header.php");
-$username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
 ?>
 <div class="page-header">
     <h2>Registration</h2>
@@ -34,7 +33,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
             <div class="form-group">
                 <label for="inputName" class="col-sm-4 control-label">Username: </label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="username" name="username" placeholder="try 'scm4'" value="<?php echo htmlentities($username)?>" required>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="try 'scm4'" required>
                 </div>
             </div>
             <div class="form-group">

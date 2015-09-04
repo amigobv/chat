@@ -66,7 +66,8 @@ class Controller extends BaseObject {
                     $this->forwardRequest(['Invalid user information provided']);
                 }
 
-                $_SESSION['username'] = $_REQUEST[self::USR_NAME];
+                $user = DataManager::getUserByUsername($_REQUEST[self::USR_NAME]);
+                $_SESSION['username'] = $user->getID();
 
                 $user = AuthenticationManager::getAuthenticatedUser();
                 $channels = DataManager::getChannelsByUserId($user->getID());
@@ -122,7 +123,16 @@ class Controller extends BaseObject {
             case self::POST_MSG:
                 $channel = DataManager::getChannelByName($_SESSION['channel']);
                 $user = AuthenticationManager::getAuthenticatedUser();
-                DataManager::publishMessage($user->getID(), $channel->getID(), $_REQUEST[self::POST_TITLE], $_REQUEST[self::POST_CONTENT], 0);
+                $messages = DataManager::getAllUnansweredPosts($channel->getID());
+
+                //TODO: mark message as answered
+                foreach ($messages as $message) {
+                    if ($message->getAuthor() != $user->getID()) {
+                        DataManager::changePostStatus($message->getID(), Status::ANSWERED);
+                    }
+                }
+
+                DataManager::publishMessage($user->getID(), $channel->getID(), $_REQUEST[self::POST_TITLE], $_REQUEST[self::POST_CONTENT], Status::UNREAD);
                 break;
 
             case self::ACTION_CHANGE_CHANNEL:
@@ -179,25 +189,30 @@ class Controller extends BaseObject {
                 break;
 
             case self::AJAX_UPDATE_CHAT:
+                $currUserId = isset($_SESSION['username']) ? $_SESSION['username'] : null;
+                $channel = isset($_SESSION['channel']) ? $_SESSION['channel'] : null;
+
+                if ($currUserId && $channel) {
+                    $unreadPosts = DataManager::getAllUnreadPostsByUserId($currUserId);
+
+                    foreach ($unreadPosts as $post) {
+                        if ($post->getAuthor() != $currUserId) {
+                            DataManager::changePostStatus($post->getId(), Status::READ);
+                        }
+                    }
+                }
+
                 if (isset($_POST) && $_POST) {
                     $channel = DataManager::getChannelByName($_REQUEST['channel']);
                     $messages = DataManager::getPostsByChannel($channel->getID());
 
                     $return = "";
                     foreach($messages as $message) {
-                        if ($message->getStatus() != Status::PRIOR)
-                            $return .= Viewtility::viewMessage($message);
+                        if ($message->exists())
+                            $return .= Viewtility::viewMessage($message, DataManager::getPostStatus($message->getId()));
                     }
 
                     echo $return;
-                    /*
-                    $return = array();
-                    foreach($messages as $message) {
-                        $return[] = $message->toJson();
-                    }
-
-                    echo json_encode($return);
-                    */
                 }
 
                 break;
